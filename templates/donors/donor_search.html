@@ -1,0 +1,93 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Find Blood Donors | BloodConnect{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="page-title">Find Blood Donors</h2>
+
+    <p>Search for available blood donors by blood group and city.</p>
+
+    <div class="card" style="margin:20px 0;">
+
+        <form method="GET" action="{% url 'donor_search' %}">
+
+            <div style="margin-bottom:15px;">
+                <label for="blood_group">Blood Group</label>
+
+                <select name="blood_group" id="blood_group">
+                    <option value="">All Blood Groups</option>
+                    <option value="A+" {% if blood_group == 'A+' %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if blood_group == 'A-' %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if blood_group == 'B+' %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if blood_group == 'B-' %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if blood_group == 'AB+' %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if blood_group == 'AB-' %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if blood_group == 'O+' %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if blood_group == 'O-' %}selected{% endif %}>O-</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label for="city">City</label>
+
+                <input
+                    type="text"
+                    name="city"
+                    id="city"
+                    value="{{ city }}"
+                    placeholder="Enter city name"
+                >
+            </div>
+
+            <button type="submit" class="btn">
+                Search Donors
+            </button>
+
+            <a href="{% url 'donor_search' %}" class="btn">
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
+    <h3>Available Donors</h3>
+
+    {% for donor in donors %}
+
+        <div class="card" style="margin:15px 0;">
+
+            <h3>{{ donor.full_name|default:donor.user.username }}</h3>
+
+            <p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
+
+            <p><strong>Age:</strong> {{ donor.age|default:"Not provided" }}</p>
+
+            <p><strong>Gender:</strong> {{ donor.gender|default:"Not provided" }}</p>
+
+            <p><strong>City:</strong> {{ donor.city }}</p>
+
+            <p><strong>Availability:</strong> Available</p>
+
+            <a href="{% url 'request_blood' donor.pk %}" class="btn">
+                Request Blood
+            </a>
+
+        </div>
+
+    {% empty %}
+
+        <div class="card">
+            <p>No donors found for your search.</p>
+            <p>Try another blood group or city.</p>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

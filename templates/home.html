@@ -1,0 +1,223 @@
+
+{% extends 'base.html' %}
+
+{% block title %}BloodConnect | Donate Blood, Save Lives{% endblock %}
+
+{% block content %}
+
+<style>
+    .hero {
+        background: linear-gradient(135deg, #fff0f1, #ffe0e5);
+        text-align: center;
+        padding: 75px 25px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+    }
+
+    .hero-tag {
+        display: inline-block;
+        background: #ffffff;
+        color: #b5122b;
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 18px;
+    }
+
+    .hero h1 {
+        color: #a10e27;
+        font-size: 44px;
+        margin-bottom: 18px;
+    }
+
+    .hero p {
+        color: #555;
+        font-size: 17px;
+        line-height: 1.8;
+        max-width: 700px;
+        margin: 0 auto 28px;
+    }
+
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .admin-link {
+        display: inline-block;
+        background: #333333;
+        color: white;
+        text-decoration: none;
+        padding: 11px 22px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .admin-link:hover {
+        background: #111111;
+        color: white;
+    }
+
+    .section-heading {
+        text-align: center;
+        color: #a10e27;
+        margin: 35px 0 20px;
+    }
+
+    .feature {
+        text-align: center;
+        padding: 25px;
+    }
+
+    .feature h3 {
+        color: #b5122b;
+        margin-bottom: 12px;
+    }
+
+    .feature p {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .stat {
+        text-align: center;
+        padding: 25px;
+    }
+
+    .stat h2 {
+        color: #b5122b;
+        font-size: 36px;
+        margin-bottom: 8px;
+    }
+
+    .stat p {
+        color: #555;
+    }
+
+    .closing-section {
+        text-align: center;
+        background: #fff0f1;
+        padding: 30px 20px;
+        border-radius: 12px;
+        margin-top: 30px;
+    }
+
+    .closing-section h2 {
+        color: #a10e27;
+        margin-bottom: 12px;
+    }
+
+    .closing-section p {
+        color: #555;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+        .hero {
+            padding: 45px 18px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+        }
+
+        .hero p {
+            font-size: 15px;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero">
+
+    <span class="hero-tag">❤️ Every Donation Matters</span>
+
+    <h1>Donate Blood, Save Lives</h1>
+
+    <p>
+        BloodConnect brings blood donors and people in need together.
+        Find compatible donors, submit blood requirements and become
+        part of a community that makes a difference.
+    </p>
+
+    <div class="hero-buttons">
+
+        <a class="btn" href="{% url 'signup' %}">
+            Become a Donor
+        </a>
+
+        <a class="btn btn-secondary" href="{% url 'search' %}">
+            Find Blood Donors
+        </a>
+
+        <a class="btn btn-success" href="{% url 'patient_request' %}">
+            Request Blood
+        </a>
+
+        <a class="admin-link" href="/admin/">
+            Admin Login
+        </a>
+
+    </div>
+
+</section>
+
+<!-- Donor Statistics -->
+<section class="grid">
+
+    <div class="card stat">
+        <h2>{{ donor_count }}</h2>
+        <p>Available Blood Donors</p>
+    </div>
+
+</section>
+
+<!-- Features Section -->
+<h2 class="section-heading">How BloodConnect Helps</h2>
+
+<section class="grid">
+
+    <div class="card feature">
+        <h3>Register as a Donor</h3>
+        <p>
+            Create your donor profile and make yourself available
+            to people who need blood.
+        </p>
+    </div>
+
+    <div class="card feature">
+        <h3>Find Blood Donors</h3>
+        <p>
+            Search for available donors based on blood group
+            and city.
+        </p>
+    </div>
+
+    <div class="card feature">
+        <h3>Submit Blood Requests</h3>
+        <p>
+            Share patient blood requirements and connect
+            with potential donors.
+        </p>
+    </div>
+
+</section>
+
+<!-- Closing Section -->
+<section class="closing-section">
+
+    <h2>Be Someone's Reason to Smile</h2>
+
+    <p>
+        A single blood donation can make a meaningful difference.
+        Join BloodConnect and help build a stronger donor community.
+    </p>
+
+</section>
+
+{% endblock %}

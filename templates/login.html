@@ -1,0 +1,52 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Login | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:480px;margin:35px auto;">
+    <h2 class="page-title" style="text-align:center;">Welcome Back!</h2>
+    <p style="text-align:center;margin-bottom:25px;">
+        Login to your BloodConnect account
+    </p>
+
+    {% if form.errors %}
+        <p class="error">Invalid username or password. Please try again.</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="id_username">Username</label>
+        <input
+            type="text"
+            name="username"
+            id="id_username"
+            placeholder="Enter username"
+            autocomplete="username"
+            required
+        >
+
+        <label for="id_password">Password</label>
+        <input
+            type="password"
+            name="password"
+            id="id_password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+        >
+
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+
+        <button type="submit" class="btn" style="width:100%;">Login</button>
+    </form>
+
+    <p style="text-align:center;margin-top:22px;">
+        Don't have an account?
+        <a href="{% url 'signup' %}" style="color:#b5122b;">Register here</a>
+    </p>
+</div>
+{% endblock %}

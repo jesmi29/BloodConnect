@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}BloodConnect{% endblock %}</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: #b5122b;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-links a,
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .logout-btn:hover {
+            text-decoration: underline;
+        }
+
+        .logout-form {
+            display: inline;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: 30px auto;
+            min-height: 70vh;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            color: #b5122b;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #b5122b;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #8f0d20;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .error {
+            color: #c62828;
+            margin: 5px 0;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background: #e8f5e9;
+            color: #256029;
+        }
+
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 18px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .container {
+                width: 94%;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">BloodConnect</a>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'search' %}">Find Donors</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'donor_profile' %}">My Profile</a>
+                <a href="{% url 'patient_request' %}">Request Blood</a>
+
+                {% if user.is_staff %}
+                    <a href="{% url 'hospital_dashboard' %}">Hospital Dashboard</a>
+                {% endif %}
+
+                <form method="POST"
+                      action="{% url 'logout' %}"
+                      class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">
+                        Logout
+                    </button>
+                </form>
+
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 BloodConnect. All rights reserved.</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

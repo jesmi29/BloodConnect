@@ -1,0 +1,729 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodConnect - Hospital Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            color: #333;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #a80024, #ed3b55);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card p {
+            color: #c41635;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #a80024;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #c41635;
+            color: white;
+            padding: 11px 18px;
+            text-decoration: none;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #92001d;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #555;
+        }
+
+        .filter-form input,
+        .filter-form select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .reset-btn {
+            color: #c41635;
+            text-decoration: none;
+            padding: 10px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        th, td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        th {
+            background: #fff0f2;
+            color: #a80024;
+        }
+
+        tr:hover {
+            background: #fffafa;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fff0c2;
+            color: #805b00;
+        }
+
+        .accepted {
+            background: #d9f4e3;
+            color: #176b37;
+        }
+
+        .completed {
+            background: #dceaff;
+            color: #174c91;
+        }
+
+        .cancelled {
+            background: #ffe0e0;
+            color: #a00000;
+        }
+
+        .action-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 8px 11px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .accept-btn {
+            background: #198754;
+        }
+
+        .accept-btn:hover {
+            background: #126c41;
+        }
+
+        .complete-btn {
+            background: #1769aa;
+        }
+
+        .complete-btn:hover {
+            background: #104e80;
+        }
+
+        .cancel-btn {
+            background: #dc3545;
+        }
+
+        .cancel-btn:hover {
+            background: #a71d2a;
+        }
+
+        .no-action {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+            background: #e5f7eb;
+            color: #176b37;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        .contact-result {
+            display: block;
+            margin-top: 8px;
+            color: #176b37;
+            font-weight: bold;
+        }
+
+        .contact-btn {
+            background: #1769aa;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .contact-btn:hover {
+            background: #104e80;
+        }
+
+        .contact-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 1050px) {
+            .filter-form {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 12px;
+            }
+
+            .stats,
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .header {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>BloodConnect Hospital Dashboard</h1>
+        <p>Manage blood donors and patient blood requests in one place.</p>
+    </div>
+
+    <!-- SUCCESS AND ERROR MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- DASHBOARD STATISTICS -->
+    <div class="stats">
+
+        <div class="stat-card">
+            <h3>Total Donors</h3>
+            <p>{{ donors_count }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Patients</h3>
+            <p>{{ patients_count }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Requests</h3>
+            <p>{{ requests_count }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Pending Requests</h3>
+            <p>{{ pending_count }}</p>
+        </div>
+
+    </div>
+
+    <!-- EXCEL REPORTS -->
+    <div class="section">
+
+        <h2>Download Reports</h2>
+
+        <div class="export-buttons">
+
+            <a href="{% url 'export_excel' %}?type=all" class="btn">
+                Download All Reports
+            </a>
+
+            <a href="{% url 'export_excel' %}?type=donors" class="btn">
+                Donor Report
+            </a>
+
+            <a href="{% url 'export_excel' %}?type=patients" class="btn">
+                Patient Report
+            </a>
+
+            <a href="{% url 'export_excel' %}?type=blood_requests" class="btn">
+                Blood Request Report
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- AVAILABLE BLOOD DONORS -->
+    <div class="section">
+
+        <h2>Available Blood Donors</h2>
+
+        <div class="table-wrapper">
+
+            <table style="min-width: 650px;">
+
+                <thead>
+                    <tr>
+                        <th>Donor Name</th>
+                        <th>Age</th>
+                        <th>Blood Group</th>
+                        <th>City</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for donor in available_donors %}
+
+                    <tr>
+
+                        <td>{{ donor.full_name }}</td>
+
+                        <td>{{ donor.age }}</td>
+
+                        <td>{{ donor.blood_group }}</td>
+
+                        <td>{{ donor.city }}</td>
+
+                        <td>
+                            <button
+                                type="button"
+                                class="contact-btn"
+                                data-url="{% url 'view_donor_contact' donor.id %}"
+                                onclick="showDonorContact(this)">
+                                View Contact
+                            </button>
+
+                            <span class="contact-result"></span>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="5" class="empty">
+                            No available donors found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- PATIENT REQUEST MANAGEMENT -->
+    <div class="section">
+
+        <h2>Patient Blood Requests</h2>
+
+        <!-- SEARCH AND FILTER FORM -->
+        <form method="GET" class="filter-form">
+
+            <!-- SEARCH BY PATIENT OR HOSPITAL -->
+            <div class="filter-group">
+                <label for="search">Patient / Hospital Name</label>
+
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    placeholder="Search patient or hospital..."
+                    value="{{ search_query }}"
+                >
+            </div>
+
+            <!-- BLOOD GROUP FILTER -->
+            <div class="filter-group">
+                <label for="blood_group">Blood Group</label>
+
+                <select name="blood_group" id="blood_group">
+
+                    <option value="">All Blood Groups</option>
+
+                    {% for value, label in blood_groups %}
+                        <option value="{{ value }}"
+                            {% if selected_blood_group == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <!-- CITY FILTER -->
+            <div class="filter-group">
+                <label for="city">City</label>
+
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    placeholder="Search by city"
+                    value="{{ selected_city }}"
+                >
+            </div>
+
+            <!-- URGENCY FILTER -->
+            <div class="filter-group">
+                <label for="urgency">Urgency</label>
+
+                <select name="urgency" id="urgency">
+
+                    <option value="">All Urgency Levels</option>
+
+                    {% for value, label in urgency_choices %}
+                        <option value="{{ value }}"
+                            {% if selected_urgency == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <!-- FILTER BUTTONS -->
+            <div class="filter-group">
+                <label>Actions</label>
+
+                <div class="filter-actions">
+
+                    <button type="submit" class="btn">
+                        Search
+                    </button>
+
+                    <a href="{% url 'hospital_dashboard' %}" class="reset-btn">
+                        Reset
+                    </a>
+
+                </div>
+            </div>
+
+        </form>
+
+        <!-- PATIENT REQUEST TABLE -->
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient Name</th>
+                        <th>Age</th>
+                        <th>Blood Group</th>
+                        <th>Units</th>
+                        <th>Hospital</th>
+                        <th>City</th>
+                        <th>Contact</th>
+                        <th>Urgency</th>
+                        <th>Required Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for patient in patient_requests %}
+
+                    <tr>
+
+                        <td>{{ patient.id }}</td>
+
+                        <td>{{ patient.patient_name }}</td>
+
+                        <td>{{ patient.age }}</td>
+
+                        <td>{{ patient.blood_group }}</td>
+
+                        <td>{{ patient.units_required }}</td>
+
+                        <td>{{ patient.hospital_name }}</td>
+
+                        <td>{{ patient.city }}</td>
+
+                        <td>{{ patient.contact_number }}</td>
+
+                        <td>{{ patient.urgency }}</td>
+
+                        <td>{{ patient.required_date|date:"d M Y" }}</td>
+
+                        <!-- STATUS -->
+                        <td>
+
+                            {% if patient.status == 'Pending' %}
+                                <span class="status pending">Pending</span>
+
+                            {% elif patient.status == 'Accepted' %}
+                                <span class="status accepted">Accepted</span>
+
+                            {% elif patient.status == 'Completed' %}
+                                <span class="status completed">Completed</span>
+
+                            {% elif patient.status == 'Cancelled' %}
+                                <span class="status cancelled">Cancelled</span>
+
+                            {% else %}
+                                {{ patient.status }}
+                            {% endif %}
+
+                        </td>
+
+                        <!-- ACTION BUTTONS -->
+                        <td>
+
+                            {% if patient.status == 'Pending' %}
+
+                                <form method="POST"
+                                      action="{% url 'update_patient_status' patient.id %}"
+                                      class="action-form">
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        name="status"
+                                        value="Accepted"
+                                        class="action-btn accept-btn">
+                                        Accept
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        name="status"
+                                        value="Cancelled"
+                                        class="action-btn cancel-btn">
+                                        Cancel
+                                    </button>
+
+                                </form>
+
+                            {% elif patient.status == 'Accepted' %}
+
+                                <form method="POST"
+                                      action="{% url 'update_patient_status' patient.id %}"
+                                      class="action-form">
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        name="status"
+                                        value="Completed"
+                                        class="action-btn complete-btn">
+                                        Complete
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        name="status"
+                                        value="Cancelled"
+                                        class="action-btn cancel-btn">
+                                        Cancel
+                                    </button>
+
+                                </form>
+
+                            {% else %}
+
+                                <span class="no-action">
+                                    No actions available
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="12" class="empty">
+                            No patient blood requests found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- VIEW DONOR CONTACT JAVASCRIPT -->
+<script>
+async function showDonorContact(button) {
+
+    const result = button.nextElementSibling;
+
+    // Prevent repeated clicks while loading
+    button.disabled = true;
+    button.textContent = "Loading...";
+
+    try {
+
+        const response = await fetch(button.dataset.url);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Unable to load contact.");
+        }
+
+        result.textContent = data.contact_number;
+        button.textContent = "Contact Viewed";
+
+    } catch (error) {
+
+        result.textContent = error.message;
+        button.textContent = "Try Again";
+        button.disabled = false;
+
+    }
+}
+</script>
+
+</body>
+</html>

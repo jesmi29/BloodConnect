@@ -1,0 +1,329 @@
+
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard | BloodConnect{% endblock %}
+
+{% block content %}
+
+<style>
+    .dashboard-container {
+        max-width: 1100px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+
+    .dashboard-heading {
+        margin-bottom: 25px;
+    }
+
+    .dashboard-heading h2 {
+        color: #b5122b;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-card {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    .dashboard-card h3 {
+        color: #b5122b;
+        margin-bottom: 18px;
+    }
+
+    .request-card {
+        border: 1px solid #eeeeee;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 15px;
+        background: #fff;
+    }
+
+    .request-card h4 {
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .request-card p,
+    .dashboard-card p {
+        margin: 8px 0;
+        color: #555;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-accepted {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .status-rejected {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .status-completed {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .dashboard-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+    }
+
+    .dashboard-actions form {
+        margin: 0;
+    }
+
+    @media (max-width: 600px) {
+        .dashboard-card {
+            padding: 17px;
+        }
+
+        .dashboard-container {
+            margin-top: 20px;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <div class="dashboard-heading">
+        <h2>My Dashboard</h2>
+
+        <p>
+            Welcome,
+            {% if profile and profile.full_name %}
+                {{ profile.full_name }}
+            {% else %}
+                {{ request.user.username }}
+            {% endif %}!
+            Manage your profile and blood requests here.
+        </p>
+    </div>
+
+    <!-- DONOR PROFILE -->
+    <div class="dashboard-card">
+
+        <h3>My Donor Profile</h3>
+
+        {% if profile %}
+
+            <p><strong>Name:</strong> {{ profile.full_name|default:"Not provided" }}</p>
+            <p><strong>Blood Group:</strong> {{ profile.blood_group }}</p>
+            <p><strong>City:</strong> {{ profile.city }}</p>
+
+            <p>
+                <strong>Availability:</strong>
+
+                {% if profile.is_available %}
+                    <span style="color:green;font-weight:bold;">Available</span>
+                {% else %}
+                    <span style="color:#c1121f;font-weight:bold;">Not Available</span>
+                {% endif %}
+            </p>
+
+            <a href="{% url 'donor_profile' %}" class="btn">
+                Edit My Profile
+            </a>
+
+        {% else %}
+
+            <p>You have not created a donor profile yet.</p>
+
+            <a href="{% url 'donor_profile' %}" class="btn">
+                Create Donor Profile
+            </a>
+
+        {% endif %}
+
+    </div>
+
+    <!-- SENT REQUESTS -->
+    <div class="dashboard-card">
+
+        <h3>My Sent Blood Requests</h3>
+
+        {% for item in sent %}
+
+            <div class="request-card">
+
+                <h4>
+                    {{ item.donor.full_name|default:item.donor.user.username }}
+                </h4>
+
+                <p><strong>Blood Group:</strong> {{ item.donor.blood_group }}</p>
+                <p><strong>City:</strong> {{ item.donor.city }}</p>
+                <p><strong>Message:</strong> {{ item.message }}</p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <span class="status status-{{ item.status|lower }}">
+                        {{ item.get_status_display }}
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Date:</strong>
+                    {{ item.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+            </div>
+
+        {% empty %}
+
+            <p>You have not sent any requests to donors.</p>
+
+        {% endfor %}
+
+        <a href="{% url 'search' %}" class="btn">
+            Find Donors
+        </a>
+
+    </div>
+
+    <!-- RECEIVED REQUESTS -->
+    <div class="dashboard-card">
+
+        <h3>Blood Requests Received</h3>
+
+        {% for item in received %}
+
+            <div class="request-card">
+
+                <h4>Request from {{ item.requester.username }}</h4>
+
+                <p><strong>Message:</strong> {{ item.message }}</p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <span class="status status-{{ item.status|lower }}">
+                        {{ item.get_status_display }}
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Date:</strong>
+                    {{ item.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+                {% if item.status == 'Pending' %}
+
+                    <div class="dashboard-actions">
+
+                        <form method="POST" action="{% url 'change_status' item.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="Accepted">
+
+                            <button type="submit" class="btn" style="background:#198754;">
+                                Accept
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{% url 'change_status' item.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="Rejected">
+
+                            <button type="submit" class="btn" style="background:#c1121f;">
+                                Reject
+                            </button>
+                        </form>
+
+                    </div>
+
+                {% elif item.status == 'Accepted' %}
+
+                    <form method="POST" action="{% url 'change_status' item.pk %}" style="margin-top:15px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="Completed">
+
+                        <button type="submit" class="btn" style="background:#198754;">
+                            Mark as Completed
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <p>You have not received any blood requests.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- PATIENT REQUEST HISTORY -->
+    <div class="dashboard-card">
+
+        <h3>My Patient Blood Requests</h3>
+
+        <p>Blood requirements you have submitted for patients.</p>
+
+        {% for item in patient_requests %}
+
+            <div class="request-card">
+
+                <h4>{{ item.patient_name }}</h4>
+
+                <p><strong>Blood Group:</strong> {{ item.blood_group }}</p>
+                <p><strong>Units Required:</strong> {{ item.units_required }}</p>
+                <p><strong>Hospital:</strong> {{ item.hospital_name }}</p>
+                <p><strong>City:</strong> {{ item.city }}</p>
+                <p><strong>Urgency:</strong> {{ item.urgency }}</p>
+
+                <p>
+                    <strong>Required Date:</strong>
+                    {{ item.required_date|date:"d M Y" }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <span class="status status-{{ item.status|lower }}">
+                        {{ item.get_status_display }}
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Submitted On:</strong>
+                    {{ item.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+            </div>
+
+        {% empty %}
+
+            <p>You have not submitted any patient blood requests.</p>
+
+        {% endfor %}
+
+        <a href="{% url 'patient_request' %}" class="btn">
+            Submit New Patient Request
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

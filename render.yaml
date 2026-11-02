@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: bloodconnect
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: gunicorn bloodconnect.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: DATABASE_URL
+        sync: false

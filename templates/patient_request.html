@@ -1,0 +1,55 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Patient Blood Request | BloodConnect{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:750px;margin:30px auto;">
+
+    <h2 class="page-title">Patient Blood Request</h2>
+
+    <p style="margin-bottom:20px;">
+        Please provide the patient details and blood requirements.
+    </p>
+
+    {% if form.non_field_errors %}
+        <div class="error">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+
+            <div style="margin-bottom:15px;">
+
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+
+            </div>
+
+        {% endfor %}
+
+        <button type="submit" class="btn" style="width:100%;">
+            Submit Blood Request
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

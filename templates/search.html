@@ -1,0 +1,115 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Find Blood Donors | BloodConnect{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="page-title">Find Blood Donors</h2>
+
+    <p>Search available blood donors by blood group and city.</p>
+
+    <!-- Search Form -->
+    <div class="card" style="margin-top: 20px;">
+
+        <form method="GET" action="{% url 'search' %}">
+
+            <div>
+                <label for="blood_group">Blood Group</label>
+
+                <select name="blood_group" id="blood_group">
+
+                    <option value="">All Blood Groups</option>
+
+                    {% for value, label in groups %}
+                        <option value="{{ value }}"
+                            {% if group == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div>
+                <label for="city">City</label>
+
+                <input
+                    type="text"
+                    name="city"
+                    id="city"
+                    value="{{ city }}"
+                    placeholder="Enter city name"
+                >
+            </div>
+
+            <button type="submit" class="btn">
+                Search Donors
+            </button>
+
+            <a href="{% url 'search' %}" class="btn">
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
+    <!-- Donor Results -->
+    <h3 style="margin: 25px 0 15px;">
+        Available Donors
+    </h3>
+
+    {% for donor in donors %}
+
+        <div class="card" style="margin-bottom: 15px;">
+
+            <h3>
+                {{ donor.full_name|default:donor.user.username }}
+            </h3>
+
+            <p>
+                <strong>Blood Group:</strong>
+                {{ donor.blood_group }}
+            </p>
+
+            <p>
+                <strong>Age:</strong>
+                {{ donor.age|default:"Not provided" }}
+            </p>
+
+            <p>
+                <strong>Gender:</strong>
+                {{ donor.gender|default:"Not provided" }}
+            </p>
+
+            <p>
+                <strong>City:</strong>
+                {{ donor.city }}
+            </p>
+
+            <p>
+                <strong>Availability:</strong>
+                <span style="color: green;">Available</span>
+            </p>
+
+            <a href="{% url 'request_blood' donor.pk %}" class="btn">
+                Request Blood
+            </a>
+
+        </div>
+
+    {% empty %}
+
+        <div class="card">
+            <h3>No Donors Found</h3>
+            <p>Try searching with another blood group or city.</p>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
