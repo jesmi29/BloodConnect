@@ -1,36 +1,146 @@
-# BloodConnect — Django Blood Donor Directory
+# 🩸 BloodConnect – Blood Donor Management System
 
-College FSD project: blood-group search, donor registration, requests and status management.
+**BloodConnect** is a web-based blood donor management system developed using Django. It aims to connect people who need blood with registered donors based on blood group and location.
 
-## Run locally (Windows, VS Code)
+The system provides donor registration, blood group search, blood request management, and staff administration through a simple and user-friendly interface.
 
-1. Install Python 3.12+ and VS Code. Extract this ZIP, open its `bloodconnect_project` folder in VS Code.
-2. Open **Terminal > New Terminal** and run:
+## 🌟 Features
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe manage.py migrate
-.\.venv\Scripts\python.exe manage.py createsuperuser
-$env:DEBUG="True"
-.\.venv\Scripts\python.exe manage.py runserver
+- **User Registration and Login:** Users can create accounts and securely log in.
+- **Donor Registration:** Donors can provide their details, including blood group, age, gender, location, and availability.
+- **Blood Group Search:** Search for donors based on blood group and location.
+- **Blood Request Management:** Users can send blood requests to registered donors.
+- **Request Status Tracking:** Donors can manage incoming requests and update their status.
+- **Staff Administration:** Staff can manage donor records through the Django admin panel.
+- **Responsive Interface:** Simple interface designed for easy navigation.
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Backend programming |
+| Django | Web framework |
+| HTML | Page structure |
+| CSS | Styling |
+| Bootstrap | Responsive design |
+| PostgreSQL | Production database |
+| SQLite | Local development database |
+| Git & GitHub | Version control |
+| Render | Deployment |
+| Supabase | Hosted PostgreSQL database |
+
+## 📂 Project Structure
+
+```text
+BloodConnect/
+│
+├── bloodconnect/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+│
+├── donors/
+│   ├── migrations/
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   └── admin.py
+│
+├── templates/
+├── static/
+│   └── css/
+│
+├── .env.example
+├── .gitignore
+├── build.sh
+├── render.yaml
+├── manage.py
+├── requirements.txt
+└── README.md
 ```
 
-3. Visit http://127.0.0.1:8000/ and admin at http://127.0.0.1:8000/admin/.
-4. Sign up as user A and create a donor profile. Sign out, sign up as user B, search and send a request. Log in as A to accept it.
+## ⚙️ Installation and Setup
 
-## Deployment on Render (with PostgreSQL)
+### 1. Clone the repository
 
-1. Push these extracted files to a GitHub repository. Do not commit `.env`, `db.sqlite3` or `.venv`.
-2. Create a **persistent PostgreSQL database** on Render (or another supported provider). Copy its internal connection URL into the web service `DATABASE_URL` environment variable. Check current pricing/availability.
-3. Create a Render Web Service from your GitHub repository. Set runtime to Python, build command `bash build.sh`, and start command `gunicorn bloodconnect.wsgi:application`. Alternatively use `render.yaml` as a blueprint and fill required variables.
-4. Configure environment variables: `DJANGO_SECRET_KEY` (long random secret), `DEBUG=False`, `DATABASE_URL`, `ALLOWED_HOSTS=<your-service>.onrender.com`, and `CSRF_TRUSTED_ORIGINS=https://<your-service>.onrender.com`.
-5. Deploy. The build command installs packages, collects static files and migrates the database.
-6. For admin, run `python manage.py createsuperuser` using the provider's secure shell/one-off command facility if available. Do not put admin passwords in source code.
-7. Test registration, donor search, requests and status updates on the public URL.
+```bash
+git clone https://github.com/jesmi29/BloodConnect.git
+```
 
-**Important:** SQLite on an ephemeral hosted filesystem loses data on redeployment. Use a persistent PostgreSQL database in production. This project is a college demo, not a verified medical or emergency service. Donor phone numbers are not exposed on public pages; further security, consent and moderation work is needed before collecting real users' data.
+### 2. Navigate to the project folder
 
-## Offline
+```bash
+cd BloodConnect
+```
 
-Once dependencies are installed, the Django development server and pages work locally without internet. Other people cannot access the hosted website without internet. This is not an offline-sync PWA.
+### 3. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+### 4. Activate the virtual environment (Windows)
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+### 5. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 6. Configure environment variables
+
+Create a `.env` file using `.env.example` as a reference. Configure your local development settings and database credentials securely. Never upload `.env` or passwords to GitHub.
+
+### 7. Apply database migrations
+
+```bash
+python manage.py migrate
+```
+
+### 8. Create an admin account (optional)
+
+```bash
+python manage.py createsuperuser
+```
+
+### 9. Run the development server
+
+```bash
+python manage.py runserver
+```
+
+Open the application in your browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+## 🌐 Live Deployment
+
+**Live Website:** https://bloodconnect-abei.onrender.com
+
+**GitHub Repository:** https://github.com/jesmi29/BloodConnect
+
+The application is deployed using Render with a PostgreSQL database hosted on Supabase.
+
+## 🔐 Security and Privacy
+
+- Environment variables are used to store sensitive configuration.
+- Database credentials and secret keys should never be committed to GitHub.
+- Donor contact information should be protected.
+- This project is an academic demonstration and is not a verified medical or emergency service.
+
+## 🎯 Project Objective
+
+The main objective of BloodConnect is to simplify the process of finding blood donors by providing a centralized platform where users can search for donors and manage blood requests efficiently.
+
+## 👩‍💻 Developer
+
+**Jesmi S**  
+B.Sc. Information Technology  
+Sri Ramakrishna College of Arts And Science For Womens
